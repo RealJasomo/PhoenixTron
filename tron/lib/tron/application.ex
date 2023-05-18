@@ -14,6 +14,16 @@ defmodule Tron.Application do
       Tron.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Tron.PubSub},
+      # Start Horde Registry
+      {Horde.Registry, keys: :unique, name: Tron.GameRegistry},
+      # Start Horde DynamicSupervisor
+      {Horde.DynamicSupervisor,
+       [
+         name: Tron.GameSupervisor,
+         shutdown: 1000,
+         strategy: :one_for_one,
+         members: :auto
+       ]},
       # Start Finch
       {Finch, name: Tron.Finch},
       # Start the Endpoint (http/https)
