@@ -17,7 +17,8 @@ defmodule TronWeb.Router do
   scope "/", TronWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", PageLive, :index
+    live "/play", PlayLive, :index
   end
 
   # Other scopes may use custom stacks.

@@ -44,7 +44,7 @@ defmodule TronWeb do
 
       import Plug.Conn
       import TronWeb.Gettext
-
+      alias TronWeb.Router.Helpers, as: Routes
       unquote(verified_routes())
     end
   end
@@ -52,9 +52,10 @@ defmodule TronWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {TronWeb.Layouts, :app}
+        layout: {TronWeb.Layouts, "live.html"}
 
       unquote(html_helpers())
+      unquote(view_helpers())
     end
   end
 
@@ -92,6 +93,17 @@ defmodule TronWeb do
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
+    end
+  end
+
+  defp view_helpers do
+    quote do
+      use Phoenix.HTML
+
+      import Phoenix.LiveView.Helpers
+      import TronWeb.LiveView.Components
+      import TronWeb.Gettext
+      alias TronWeb.Router.Helpers, as: Routes
     end
   end
 
