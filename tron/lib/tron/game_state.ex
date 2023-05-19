@@ -248,6 +248,24 @@ defmodule Tron.GameState do
     }
   end
 
+  def update_snake_direction(%GameState{} = state, uid, new_dir) do
+    new_snakes = Enum.map(state.snakes, fn s ->
+      if s.user_id == uid do
+        %Snake{
+          s
+          | dir: new_dir
+        }
+      else
+        s
+      end
+    end)
+
+    %GameState{
+      state
+      | snakes: new_snakes
+    }
+  end
+
   defp generate_food_from_dead_snake(%Snake{} = snake) do
     snake.pos
     |> Stream.with_index(0)

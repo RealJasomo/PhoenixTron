@@ -34,14 +34,17 @@
       </ul>
     </div>
 
-    <%= for i <- 1..100  do %>
-      <div style="display: flex;flex-direction:row;flex-wrap:wrap width: 500px">
-        <%= for j <- 1..100  do %>
-          <div style="width:10px;height:10px;background-color:<%= TronWeb.PlayLive.color_loc(i,j,@game) %>; border: 1px solid white">
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+    <div phx-window-keyup="update_dir">
+      <%= inspect(@game) %>
+      <%= for i <- 1..100  do %>
+        <div style="display: flex;flex-direction:row;flex-wrap:wrap width: 500px">
+          <%= for j <- 1..100  do %>
+            <div style="width:10px;height:10px;background-color:<%= TronWeb.PlayLive.color_loc(i,j,@game) %>; border: 1px solid white">
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 
 

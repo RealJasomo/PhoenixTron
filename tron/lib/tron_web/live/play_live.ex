@@ -4,6 +4,7 @@ defmodule TronWeb.PlayLive do
   alias Phoenix.PubSub
   alias Tron.GameState
   alias Tron.GameServer
+  alias Tron.Constants
 
   @impl true
   def mount(%{"game" => game_code, "player" => player_id} = _params, _session, socket) do
@@ -58,10 +59,25 @@ defmodule TronWeb.PlayLive do
     {:noreply, assign(socket, :server_found, GameServer.room_exists?(socket.assigns.game_code))}
   end
 
+  def handle_event("update_dir", %{"key" => key}, socket) do
+    direction = case key do
+      "ArrowUp" -> Constants.direction().up
+      "ArrowDown" -> Constants.direction().down
+      "ArrowRight" -> Constants.direction().right
+      "ArrowLeft" -> Constants.direction().left
+    end
+    GameServer.change_dir(socket.assigns.game_code,socket.assigns.player_id, direction)
+    {:noreply, socket}
+  end
+
+  def handle_event("update_temp", _, socket) do
+    {:noreply, socket}
+  end
+
   def color_loc(i, j, game) do
     cond do
       Enum.member?(game.foods, {i,j}) -> "black"
-      Enum.any?(game.snakes, fn snake -> Enum.member?(snake.pos, {i,j}) end) -> Enum.find(game.snakes, fn snake -> Enum.member?(snake.pos, {i,j}) end).color
+      Enum.any?(game.snakes, fn snake -> Enum.member?(snake.pos, {i,j}) end) -> "##{Enum.find(game.snakes, fn snake -> Enum.member?(snake.pos, {i,j}) end).color}"
       true -> "lightgray"
     end
   end

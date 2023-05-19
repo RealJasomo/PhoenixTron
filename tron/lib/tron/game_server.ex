@@ -79,6 +79,10 @@ defmodule Tron.GameServer do
     GenServer.call(via_tuple(room_code), {:leave_game, player_name})
   end
 
+  def change_dir(room_code, uid, new_dir) do
+    GenServer.call(via_tuple(room_code), {:update_direction, uid, new_dir})
+  end
+
   def broadcast_game_state(%GameState{} = state) do
     PubSub.broadcast(Tron.PubSub, "game:#{state.room}", {:game_state, state})
   end
@@ -119,12 +123,19 @@ defmodule Tron.GameServer do
     new_state = %GameState{
       state
       | players: state.players ++ [new_player],
-        snakes: state.snakes ++ [new_snake]
+        snakes: state.snakes ++ [new_snake],
+        state: :running
     }
 
     Logger.info("Player #{inspect(new_player)} joined game #{inspect(state.room)}")
     broadcast_game_state(new_state)
     {:reply, {:ok, new_player}, new_state}
+  end
+
+  def handle_call({:update_direction, uid, new_dir}, _from, state) do
+    new_state = GameState.update_snake_direction(state, uid, new_dir)
+    broadcast_game_state(new_state)
+    {:reply, :ok, new_state}
   end
 
   def handle_call({:leave_game, player_name}, _from, state) do
