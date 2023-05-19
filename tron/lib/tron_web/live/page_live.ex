@@ -1,12 +1,12 @@
 defmodule TronWeb.PageLive do
   use TronWeb, :live_view
+  require Logger
   import Phoenix.HTML.Form
   alias Tron.Player
   alias Tron.GameServer
   alias Tron.GameStarter
 
   @impl true
-  @spec mount(any, any, map) :: {:ok, map}
   def mount(_params, _session, socket) do
     {:ok,
      socket
@@ -29,8 +29,10 @@ defmodule TronWeb.PageLive do
          {:ok, game_code} <- GameStarter.get_game_code(starter),
          {:ok, player} <- Player.create(%{name: starter.name}),
          {:ok, _} <- GameServer.start_or_join_game(game_code, player) do
+      Logger.info("Game started with code #{game_code} and player #{player.id}")
+
       socket =
-        push_redirect(socket,
+        push_navigate(socket,
           to: Routes.play_path(socket, :index, game: game_code, player: player.id)
         )
 

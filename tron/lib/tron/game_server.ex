@@ -48,6 +48,7 @@ defmodule Tron.GameServer do
     end
   end
 
+  @spec start_or_join_game(any, Tron.Player.t()) :: {:error, any} | {:ok, :joined | :started}
   def start_or_join_game(room_code, %Player{} = player) do
     case Horde.DynamicSupervisor.start_child(
            Tron.GameSupervisor,
@@ -126,5 +127,13 @@ defmodule Tron.GameServer do
 
     broadcast_game_state(new_state)
     {:reply, :ok, new_state}
+  end
+
+  def handle_call(:current_state, _from, state) do
+    {:reply, state, state}
+  end
+
+  def get_current_game_state(game_code) do
+    GenServer.call(via_tuple(game_code), :current_state)
   end
 end

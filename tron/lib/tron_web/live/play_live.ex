@@ -36,4 +36,25 @@ defmodule TronWeb.PlayLive do
 
     {:noreply, updated_socket}
   end
+
+  @impl true
+  def handle_info(:load_game_state, %{assigns: %{server_found: true}} = socket) do
+    case GameServer.get_current_game_state(socket.assigns.game_code) do
+      %GameState{} = game ->
+        player = GameState.get_player(game, socket.assigns.player_id)
+        {:noreply, assign(socket, server_found: true, game: game, player: player)}
+
+      error ->
+        Logger.error("Failed to load game server state. #{inspect(error)}")
+        {:noreply, assign(socket, :server_found, false)}
+    end
+  end
+
+  @impl true
+  def handle_info(:load_game_state, socket) do
+    Logger.debug("Game server #{inspect(socket.assigns.game_code)} not found")
+    # Schedule to check again
+    Process.send_after(self(), :load_game_state, 500)
+    {:noreply, assign(socket, :server_found, GameServer.room_exists?(socket.assigns.game_code))}
+  end
 end

@@ -25,9 +25,9 @@ defmodule Tron.Player do
   def changeset(player, attrs) do
     player
     |> cast(attrs, [:name, :color])
+    |> generate_color()
     |> validate_required([:name, :color])
     |> generate_id()
-    |> generate_color()
   end
 
   defp generate_id(changeset) do

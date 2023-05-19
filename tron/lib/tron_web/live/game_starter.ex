@@ -67,7 +67,6 @@ defmodule Tron.GameStarter do
     end
   end
 
-  @spec get_game_code(t()) :: {:ok, GameState.game_code()} | {:error, String.t()}
   def get_game_code(%GameStarter{type: :join, game_code: code}), do: {:ok, code}
 
   def get_game_code(%GameStarter{type: :start}) do

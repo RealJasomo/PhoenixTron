@@ -17,6 +17,10 @@ defmodule Tron.GameState do
           foods: list({integer(), integer()}),
           created_at: nil | DateTime.t()
         }
+
+  @type room_code :: String.t()
+
+  @spec new(room_code(), Player.t()) :: t()
   def new(room_code, %Player{} = player) do
     %GameState{
       room: room_code,
@@ -25,6 +29,10 @@ defmodule Tron.GameState do
       state: :waiting,
       created_at: DateTime.utc_now()
     }
+  end
+
+  def get_player(%GameState{players: players} = _state, player_id) do
+    Enum.find(players, &(&1.id == player_id))
   end
 
   def start(%GameState{} = state) do
@@ -110,7 +118,7 @@ defmodule Tron.GameState do
 
     foods =
       Enum.reduce(1..number_of_food, foods, fn _i, foods ->
-        foods |> get_available_position(foods) |> List.insert_at(-1, foods)
+        foods |> List.insert_at(-1, get_available_position(state.snakes, foods))
       end)
 
     %GameState{state | foods: foods}
@@ -167,7 +175,10 @@ defmodule Tron.GameState do
   end
 
   defp get_available_position(snake_locations, foods) do
-    unavailable_positions = snake_locations |> Map.merge(Map.new(foods, fn pos -> {pos, 0} end))
+    unavailable_positions =
+      snake_locations
+      |> Map.new(fn pos -> {pos, 0} end)
+      |> Map.merge(Map.new(foods, fn pos -> {pos, 0} end))
 
     available_positions =
       Enum.reduce(0..(Constants.game().width - 1), [], fn x, x_acc ->
