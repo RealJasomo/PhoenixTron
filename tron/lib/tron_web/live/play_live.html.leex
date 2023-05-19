@@ -11,6 +11,7 @@
       <%= inspect(@game.room) %>
     </p>
   <% else %>
+    <%= inspect(@game) %>
     <%= if @player do %>
       <div class="mb-4 text-lg leading-6 font-medium text-gray-900 text-center">
         Player: <span class="font-semibold"><%= @player.name %></span>
@@ -34,12 +35,25 @@
       </ul>
     </div>
 
+    <table>
+      <%= for i <- 1..Tron.Constants.game.width do%>
+      <tr id="row-<%= i %>">
+        <%= for j <- 1..Tron.Constants.game.height do %>
+          <td id="cell-<%= i %>-<%= j %>">
+               <div style="width:10px;height:10px;background-color:lightgray; border: 1px solid white">
+          </td>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+
+
     <%= for i <- 1..100  do %>
       <div style="display: flex;flex-direction:row;flex-wrap:wrap width: 500px">
         <%= for j <- 1..100  do %>
           <%= for snake <- @game.snakes  do %>
             <%= if Enum.member?(snake.pos, {i,j}) do %>
-              <div style="width:10px;height:10px;background-color:<%= snake.color %>>; border: 1px solid white">
+              <div style="width:10px;height:10px;background-color:##{snake.color}; border: 1px solid white">
             <% else %>
               <div style="width:10px;height:10px;background-color:lightgray; border: 1px solid white">
             <% end %>

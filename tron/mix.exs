@@ -51,7 +51,8 @@ defmodule Tron.MixProject do
       {:jason, "~> 1.2"},
       {:horde, "~> 0.8.7"},
       {:color_stream, "~> 0.0.1"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:poison, "~> 5.0.0"}
     ]
   end
 

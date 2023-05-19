@@ -19,6 +19,7 @@ defmodule TronWeb.PlayLive do
        player_id: player_id,
        player: nil,
        game: %GameState{},
+       positions: %{},
        server_found: GameServer.room_exists?(game_code)
      )}
   end
