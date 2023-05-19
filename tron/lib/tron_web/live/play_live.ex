@@ -58,4 +58,17 @@ defmodule TronWeb.PlayLive do
     Process.send_after(self(), :load_game_state, 500)
     {:noreply, assign(socket, :server_found, GameServer.room_exists?(socket.assigns.game_code))}
   end
+
+  def color_loc(i, j, game) do
+    cond do
+      Enum.member?(game.foods, {i, j}) ->
+        "black"
+
+      Enum.any?(game.snakes, fn snake -> Enum.member?(snake.pos, {i, j}) end) ->
+        "##{Enum.find(game.snakes, fn snake -> Enum.member?(snake.pos, {i, j}) end).color}"
+
+      true ->
+        "lightgray"
+    end
+  end
 end
