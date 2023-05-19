@@ -6,6 +6,7 @@ defmodule Tron.GameState do
   alias Tron.Snake
   alias Tron.Constants
   alias __MODULE__
+  require Logger
 
   defstruct room: nil, players: [], snakes: [], foods: [], state: :waiting, created_at: nil
 
@@ -52,7 +53,7 @@ defmodule Tron.GameState do
     updated_snake_state =
       snakes
       |> Enum.reduce(state, fn snake, new_state ->
-        update_snake_position(snake, new_state)
+        update_snake_position(new_state, snake)
       end)
 
     snake_locations = updated_snake_state |> get_snake_tiles()

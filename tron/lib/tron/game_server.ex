@@ -23,9 +23,12 @@ defmodule Tron.GameServer do
   end
 
   def start_link(name, player) do
-    case GenServer.start_link(GameServer, %GameState{room: name, players: [player]},
-           name: via_tuple(name)
-         ) do
+    Logger.info("Starting GameServer #{inspect(name)} with player #{inspect(player)}")
+    state = %GameState{room: name, players: [player]}
+    new_snake = GameState.new_snake(player, state)
+    new_state = %GameState{state | snakes: [new_snake]}
+
+    case GenServer.start_link(GameServer, new_state, name: via_tuple(name)) do
       {:ok, pid} ->
         {:ok, pid}
 
@@ -112,7 +115,15 @@ defmodule Tron.GameServer do
 
   def handle_call({:join_game, player_name}, _from, state) do
     new_player = %Player{name: player_name}
-    new_state = %GameState{state | players: state.players ++ [new_player]}
+    new_snake = GameState.new_snake(new_player, state)
+
+    new_state = %GameState{
+      state
+      | players: state.players ++ [new_player],
+        snakes: state.snakes ++ [new_snake]
+    }
+
+    Logger.info("Player #{inspect(new_player)} joined game #{inspect(state.room)}")
     broadcast_game_state(new_state)
     {:reply, {:ok, new_player}, new_state}
   end
