@@ -119,7 +119,8 @@ defmodule Tron.GameServer do
     new_state = %GameState{
       state
       | players: state.players ++ [new_player],
-        snakes: state.snakes ++ [new_snake]
+        snakes: state.snakes ++ [new_snake],
+        state: :running
     }
 
     Logger.info("Player #{inspect(new_player)} joined game #{inspect(state.room)}")
