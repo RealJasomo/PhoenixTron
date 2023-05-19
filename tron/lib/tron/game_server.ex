@@ -85,7 +85,7 @@ defmodule Tron.GameServer do
   end
 
   def do_generate_room_code() do
-    range = ?A..?Z |> Enum.to_list() |> Enum.concat(1..9)
+    range = ?A..?Z
 
     1..9
     |> Enum.map(fn _ -> [Enum.random(range)] |> List.to_string() end)
