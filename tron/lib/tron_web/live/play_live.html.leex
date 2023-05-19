@@ -37,13 +37,7 @@
     <%= for i <- 1..100  do %>
       <div style="display: flex;flex-direction:row;flex-wrap:wrap width: 500px">
         <%= for j <- 1..100  do %>
-          <%= for snake <- @game.snakes  do %>
-            <%= if Enum.member?(snake.pos, {i,j}) do %>
-              <div style="width:10px;height:10px;background-color:<%= snake.color %>>; border: 1px solid white">
-            <% else %>
-              <div style="width:10px;height:10px;background-color:lightgray; border: 1px solid white">
-            <% end %>
-          <% end %>
+          <div style="width:10px;height:10px;background-color:<%= TronWeb.PlayLive.color_loc(i,j,@game) %>; border: 1px solid white">
           </div>
         <% end %>
       </div>
