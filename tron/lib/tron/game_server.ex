@@ -65,7 +65,7 @@ defmodule Tron.GameServer do
         Logger.info("Game server #{inspect(room_code)} already running. Joining")
 
         case join_game(room_code, player) do
-          :ok -> {:ok, :joined}
+          {:ok, _player} -> {:ok, :joined}
           {:error, _reason} = error -> error
         end
     end
@@ -113,8 +113,7 @@ defmodule Tron.GameServer do
     {:noreply, new_state}
   end
 
-  def handle_call({:join_game, player_name}, _from, state) do
-    new_player = %Player{name: player_name}
+  def handle_call({:join_game, new_player}, _from, state) do
     new_snake = GameState.new_snake(new_player, state)
 
     new_state = %GameState{
