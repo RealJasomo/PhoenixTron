@@ -77,9 +77,7 @@ defmodule Tron.GameServer do
   end
 
   def broadcast_game_state(%GameState{} = state) do
-    PubSub.broadcast(Tron.PubSub, "game:#{state.room}", {:players, state.players})
-    PubSub.broadcast(Tron.PubSub, "game:#{state.room}", {:snakes, state.snakes})
-    PubSub.broadcast(Tron.PubSub, "game:#{state.room}", {:food, state.foods})
+    PubSub.broadcast(Tron.PubSub, "game:#{state.room}", {:game_state, state})
   end
 
   def via_tuple(name) do
